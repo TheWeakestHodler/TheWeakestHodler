@@ -13,6 +13,7 @@ contract TheWeakestHodler {
     mapping(address => uint256) public shares;
     
     function () public payable {
+        // solium-disable-next-line security/no-tx-origin
         require(msg.sender == tx.origin);
 
         if (msg.value > 0) {
@@ -29,10 +30,13 @@ contract TheWeakestHodler {
             amount = balanceOf(msg.sender);
             totalSupply = totalSupply.sub(shares[msg.sender]);
             shares[msg.sender] = 0;
+            // solium-disable-next-line security/no-send
             msg.sender.send(amount);
             if (totalSupply > 0) {
+                // solium-disable-next-line security/no-send
                 creator.send(amount.div(percentRemaining)); // 1%
             } else {
+                // solium-disable-next-line security/no-send
                 creator.send(address(this).balance);
             }
         }
