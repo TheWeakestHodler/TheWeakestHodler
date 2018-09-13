@@ -13,6 +13,8 @@ contract TheWeakestHodler {
     mapping(address => uint256) public shares;
     
     function () public payable {
+        require(msg.sender == tx.origin);
+
         if (msg.value > 0) {
             // Deposit
             if (totalSupply == 0) {
@@ -27,11 +29,11 @@ contract TheWeakestHodler {
             amount = balanceOf(msg.sender);
             totalSupply = totalSupply.sub(shares[msg.sender]);
             shares[msg.sender] = 0;
-            msg.sender.transfer(amount);
+            msg.sender.send(amount);
             if (totalSupply > 0) {
-                creator.transfer(amount.div(percentRemaining)); // 1%
+                creator.send(amount.div(percentRemaining)); // 1%
             } else {
-                creator.transfer(address(this).balance);
+                creator.send(address(this).balance);
             }
         }
     }
