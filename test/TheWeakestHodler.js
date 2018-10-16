@@ -20,21 +20,21 @@ contract('TheWeakestHodler', function ([_, wallet1, wallet2, wallet3, wallet4, w
     describe('deposit', function () {
         it('should work at least once', async function () {
             (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(0);
-            (await hodl.totalSupply.call()).should.be.bignumber.equal(0);
+            (await hodl.totalShares.call()).should.be.bignumber.equal(0);
             await web3.eth.sendTransaction({ to: hodl.address, value: 1000, from: wallet1 });
             (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(900);
-            (await hodl.totalSupply.call()).should.be.bignumber.equal(1000);
+            (await hodl.totalShares.call()).should.be.bignumber.equal(1000);
         });
 
         it('should work at least twice', async function () {
             (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(0);
             await web3.eth.sendTransaction({ to: hodl.address, value: 1000, from: wallet1 });
             (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(900);
-            (await hodl.totalSupply.call()).should.be.bignumber.equal(1000);
+            (await hodl.totalShares.call()).should.be.bignumber.equal(1000);
 
             await web3.eth.sendTransaction({ to: hodl.address, value: 500, from: wallet1 });
             (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(1350);
-            (await hodl.totalSupply.call()).should.be.bignumber.equal(1500);
+            (await hodl.totalShares.call()).should.be.bignumber.equal(1500);
         });
     });
 
@@ -70,29 +70,29 @@ contract('TheWeakestHodler', function ([_, wallet1, wallet2, wallet3, wallet4, w
             // First user deposit
             (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(0);
             (await hodl.balanceOf.call(wallet2)).should.be.bignumber.equal(0);
-            (await hodl.totalSupply.call()).should.be.bignumber.equal(0);
+            (await hodl.totalShares.call()).should.be.bignumber.equal(0);
             await web3.eth.sendTransaction({ to: hodl.address, value: 1000, from: wallet1 });
             (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(900);
             (await hodl.balanceOf.call(wallet2)).should.be.bignumber.equal(0);
-            (await hodl.totalSupply.call()).should.be.bignumber.equal(1000);
+            (await hodl.totalShares.call()).should.be.bignumber.equal(1000);
 
             // Second user deposit
             await web3.eth.sendTransaction({ to: hodl.address, value: 2000, from: wallet2 });
             (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(900);
             (await hodl.balanceOf.call(wallet2)).should.be.bignumber.equal(1800);
-            (await hodl.totalSupply.call()).should.be.bignumber.equal(3000);
+            (await hodl.totalShares.call()).should.be.bignumber.equal(3000);
 
             // Second user withdrawal
             await web3.eth.sendTransaction({ to: hodl.address, value: 0, from: wallet2 });
-            (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(Math.trunc((1000 + Math.trunc(200 * 0.9)) * 0.9));
+            (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(Math.trunc((1000 + 2000 * 0.10) * 0.9));
             (await hodl.balanceOf.call(wallet2)).should.be.bignumber.equal(0);
-            (await hodl.totalSupply.call()).should.be.bignumber.equal(1000);
+            (await hodl.totalShares.call()).should.be.bignumber.equal(1000);
 
             // First user withdrawal
             await web3.eth.sendTransaction({ to: hodl.address, value: 0, from: wallet1 });
             (await hodl.balanceOf.call(wallet1)).should.be.bignumber.equal(0);
             (await hodl.balanceOf.call(wallet2)).should.be.bignumber.equal(0);
-            (await hodl.totalSupply.call()).should.be.bignumber.equal(0);
+            (await hodl.totalShares.call()).should.be.bignumber.equal(0);
         });
     });
 });
